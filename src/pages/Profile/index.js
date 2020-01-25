@@ -2,12 +2,10 @@ import React from 'react';
 
 import { Container } from './styles';
 
-import { avatar } from '~/images';
-
 export default function Profile() {
   return (
     <Container>
-      <img src={avatar} alt="avatar" />
+      <img src="" alt="avatar" />
       <h1>Iron Man</h1>
       <p>
         Lorem Ipsum is simply dummy text of the printing and typesetting

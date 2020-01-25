@@ -1,1 +1,1 @@
-export { default as avatar } from './avatar.jpg';
+export { default as loadingImg } from './loading.gif';

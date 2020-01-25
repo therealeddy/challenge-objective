@@ -7,7 +7,7 @@ const Pagination = ({ currentPage, totalPosts, postsPerPage, setPaged }) => {
 
   let cont = 0;
   let paged = 0;
-  const totalPages = totalPosts / postsPerPage;
+  const totalPages = Math.ceil(totalPosts / postsPerPage);
 
   if (currentPage === 1) {
     paged = currentPage;
