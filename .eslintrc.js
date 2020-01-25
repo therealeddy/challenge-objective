@@ -41,7 +41,8 @@ module.exports = {
       "required": {
         "some": [ "nesting", "id"  ]
       }
-    }]
+    }],
+    'no-plusplus': 'off'
   },
   settings: {
     "import/resolver": {

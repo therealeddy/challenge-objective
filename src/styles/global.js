@@ -32,7 +32,6 @@ export default createGlobalStyle`
   button, a {
     cursor: pointer;
     text-decoration: none;
-    transition: all .2s linear;
     &:hover {
       opacity: 0.7;
     }

@@ -1,20 +1,66 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Link } from 'react-router-dom';
-import { MdPlayArrow } from 'react-icons/md';
 import { Container } from './styles';
+import { Pagination } from '~/components';
 
-import { avatar } from '~/images';
+import api from '~/services/api';
+import { formatTrim } from '~/utils/formatTrim';
 
 export default function Home() {
-  const pages = [
-    { number: 1 },
-    { number: 2 },
-    { number: 3 },
-    { number: 4 },
-    { number: 5 },
-    { number: 6 },
-  ];
+  const [postsPerPage] = useState(10);
+  const [totalPosts, setTotalPosts] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [characters, setCharacters] = useState([]);
+
+  useEffect(() => {
+    async function getData() {
+      const response = await api.get('/characters');
+
+      const { data } = response.data;
+      const { count } = response.data.meta;
+
+      const dataDraft = data.map(item => ({
+        id: item.id,
+        name: item.attributes.name,
+        description: formatTrim(item.attributes.description, 300),
+        avatar: item.attributes.image.original,
+      }));
+
+      setCharacters(dataDraft);
+      setTotalPosts(count);
+    }
+
+    getData();
+  }, []);
+
+  async function onClickPage(number) {
+    setCurrentPage(number);
+
+    let offset = number - 1;
+
+    if (!(offset === 0)) {
+      offset *= 10;
+    }
+
+    const response = await api.get('/characters', {
+      params: {
+        'page[offset]': offset,
+      },
+    });
+
+    const { data } = response.data;
+
+    const dataDraft = data.map(item => ({
+      id: item.id,
+      name: item.attributes.name,
+      description: formatTrim(item.attributes.description, 300),
+      avatar: item.attributes.image.original,
+    }));
+
+    setCharacters(dataDraft);
+  }
 
   return (
     <Container>
@@ -28,38 +74,26 @@ export default function Home() {
           <span>Descricao</span>
         </div>
         <div className="tbody">
-          <div className="row">
-            <span>
-              <img src={avatar} alt="avatar" className="avatar" />
-              <Link to="/profile">Tony Stark</Link>
-            </span>
-            <span>
-              <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the standard dummy text ever
-                since the 1500s, when an unknown printer took a galley of type
-                and scrambled it to make a type specimen book.
-              </p>
-            </span>
-          </div>
+          {characters.map(character => (
+            <div className="row" key={String(character.id)}>
+              <span>
+                <img src={character.avatar} alt="avatar" className="avatar" />
+                <Link to="/profile">{character.name}</Link>
+              </span>
+              <span>
+                <p>{character.description}</p>
+              </span>
+            </div>
+          ))}
         </div>
       </div>
       <div className="area-pagination">
-        <div className="pagination">
-          <button type="button" className="prev">
-            <MdPlayArrow color="#d42026" size={30} />
-          </button>
-          <div className="pages">
-            {pages.map((item, index) => (
-              <button key={String(index)} type="button" className="paged">
-                {item.number}
-              </button>
-            ))}
-          </div>
-          <button type="button" className="next">
-            <MdPlayArrow color="#d42026" size={30} />
-          </button>
-        </div>
+        <Pagination
+          postsPerPage={postsPerPage}
+          totalPosts={totalPosts}
+          setPaged={onClickPage}
+          currentPage={currentPage}
+        />
       </div>
     </Container>
   );
