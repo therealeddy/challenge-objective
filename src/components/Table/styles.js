@@ -33,6 +33,10 @@ export const Container = styled.div`
       display: flex;
       width: 100%;
       border-bottom: 2px solid rgba(212, 32, 38, 0.5);
+      transition: all 0.2s linear;
+      &:hover {
+        background: rgba(212, 32, 38, 0.2);
+      }
       span {
         display: flex;
         align-items: center;
@@ -41,12 +45,15 @@ export const Container = styled.div`
         @media (min-width: 992px) {
           width: 25%;
         }
-        img {
+        .avatar {
           width: 58px;
           height: 58px;
           border-radius: 100px;
-          object-fit: cover;
           margin-right: 25px;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: cover;
+          background-color: #dedede;
         }
         p,
         a {

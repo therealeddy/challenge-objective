@@ -1,8 +1,14 @@
 import React from 'react';
 import { MdPlayArrow } from 'react-icons/md';
+import PropTypes from 'prop-types';
 import { Container, ButtonPage } from './styles';
 
-const Pagination = ({ currentPage, totalPosts, postsPerPage, setPaged }) => {
+export default function Pagination({
+  currentPage,
+  totalPosts,
+  postsPerPage,
+  setPaged,
+}) {
   const pageNumbers = [];
 
   let cont = 0;
@@ -60,6 +66,11 @@ const Pagination = ({ currentPage, totalPosts, postsPerPage, setPaged }) => {
       </button>
     </Container>
   );
-};
+}
 
-export default Pagination;
+Pagination.propTypes = {
+  currentPage: PropTypes.number.isRequired,
+  totalPosts: PropTypes.number.isRequired,
+  postsPerPage: PropTypes.number.isRequired,
+  setPaged: PropTypes.func.isRequired,
+};

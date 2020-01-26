@@ -1,5 +1,5 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Container } from './styles';
 
@@ -18,7 +18,10 @@ export default function Table({ characters }) {
             key={String(character.id)}
           >
             <span>
-              <img src={character.avatar} alt="avatar" className="avatar" />
+              <div
+                className="avatar"
+                style={{ backgroundImage: `url(${character.avatar})` }}
+              />
               <p>{character.name}</p>
             </span>
             <span>
@@ -30,3 +33,7 @@ export default function Table({ characters }) {
     </Container>
   );
 }
+
+Table.propTypes = {
+  characters: PropTypes.arrayOf(PropTypes.object).isRequired,
+};

@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default createGlobalStyle`
 
@@ -32,9 +33,6 @@ export default createGlobalStyle`
   button, a {
     cursor: pointer;
     text-decoration: none;
-    &:hover {
-      opacity: 0.7;
-    }
   }
 
 `;

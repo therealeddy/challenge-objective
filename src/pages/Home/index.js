@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import { toast } from 'react-toastify';
 import { Container } from './styles';
 import { Pagination, Table, Loading, Search } from '~/components';
 
@@ -7,13 +7,10 @@ import api from '~/services/api';
 import { formatTrim } from '~/utils/formatTrim';
 
 export default function Home() {
-  const [postsPerPage] = useState(10);
   const [totalPosts, setTotalPosts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState(null);
-
+  const [search, setSearch] = useState('');
   const [characters, setCharacters] = useState([]);
-
   const [loading, setLoading] = useState(true);
 
   const dataDraft = data => {
@@ -45,10 +42,10 @@ export default function Home() {
 
       setCharacters(newData);
       setTotalPosts(count);
+      setLoading(false);
     };
 
     getData();
-    setLoading(false);
   }, []);
 
   const onClickPage = async number => {
@@ -75,7 +72,7 @@ export default function Home() {
     });
 
     const { data } = response.data;
-    const newData = dataDraft(data);
+    const newData = await dataDraft(data);
 
     setCharacters(newData);
     setLoading(false);
@@ -86,7 +83,7 @@ export default function Home() {
 
     setLoading(true);
 
-    if (search !== '') {
+    if (search) {
       const response = await api.get('characters', {
         params: {
           'filter[name]': search,
@@ -94,16 +91,22 @@ export default function Home() {
       });
 
       const { data } = response.data;
-      const { count } = response.data.meta;
+      if (data.length > 0) {
+        const { count } = response.data.meta;
 
-      const newData = dataDraft(data);
+        const newData = await dataDraft(data);
 
-      setTotalPosts(count);
-      setCurrentPage(1);
-      setCharacters(newData);
+        setTotalPosts(count);
+        setCurrentPage(1);
+        setCharacters(newData);
+      } else {
+        toast.error('Nenhum personagem com esse nome foi encontrado!');
+        await getCharacters();
+        setSearch('');
+      }
     } else {
-      getCharacters();
-      setSearch(null);
+      await getCharacters();
+      setSearch('');
     }
 
     setLoading(false);
@@ -113,6 +116,7 @@ export default function Home() {
     <Container>
       <Search
         onSubmit={handleSubmit}
+        valueInput={search}
         onChangeInput={e => setSearch(e.target.value)}
       />
       {loading ? (
@@ -122,7 +126,7 @@ export default function Home() {
           <Table characters={characters} />
           <div className="area-pagination">
             <Pagination
-              postsPerPage={postsPerPage}
+              postsPerPage={10}
               totalPosts={totalPosts}
               setPaged={onClickPage}
               currentPage={currentPage}
